@@ -1,30 +1,76 @@
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+package Java;
 
-@RestController
-@RequestMapping("/calculator")
-public class CalculatorController {
+import java.util.Stack;
 
-    @GetMapping("/addition")
-    public double addition(@RequestParam double num1, @RequestParam double num2) {
-        return num1 + num2;
+public class Calculator{
+    // public static void main(String[]  args){
+    //     String str = "01234";
+    //     System.out.println(str.substring(0, 2));
+    // }
+
+    private static String operators;
+
+    static{
+        operators = "+-/*()";
     }
 
-    @GetMapping("/subtraction")
-    public double subtraction(@RequestParam double num1, @RequestParam double num2) {
-        return num1 - num2;
+    public double calSimple(String expression){
+        String postFix = postFix(expression);
+        Stack<Double> operand = new Stack<>();
+        int index = 0;
+        for(int i = 0; i<postFix.length(); i++){
+            String current = postFix.substring(i, i+1);
+            if(operators.contains(current)){
+                operand.push(Double.parseDouble(postFix.substring(index,i)));
+                index = i+1;
+                operand.push(compute(operand.pop(),operand.pop(),current));
+            }
+        }
+        return operand.pop();
     }
-
-    @GetMapping("/multiplication")
-    public double multiplication(@RequestParam double num1, @RequestParam double num2) {
-        return num1 * num2;
+    private static String postFix(String expression){
+        String postFix = "";
+        Stack<String> operator = new Stack<>();
+        int index = 0;
+        for(int i = 0; i<expression.length(); i++){
+            String current = expression.substring(i, i+1);
+            String top = operator.peek();
+            if(operators.contains(current)){
+                postFix.concat(expression.substring(index, i));
+                index = i+1;
+                if(current.equals("("))
+                    operator.push(current);
+                else if(current.equals(")")){
+                    while(!(top.equals("("))){
+                        postFix.concat(operator.pop());
+                    }
+                    operator.pop();
+                }
+                else{
+                    while(!(operator.isEmpty()) && precendence(top)>=precendence(current) && !(top.equals("(")))
+                        postFix.concat(operator.pop());
+                    operator.push(current);
+                }
+            }
+        }
+        while(!(operator.isEmpty()))
+            postFix.concat(operator.pop());
+        return postFix;
     }
-
-    @GetMapping("/division/{num1}/{num2}")
-    public double division(@PathVariable double num1, @PathVariable double num2) {
-        return num1 / num2;
+    private static int precendence(String operator){
+        return switch(operator){
+            case "*","/" -> 2;
+            case "+","-" -> 1;
+            default -> 0;
+        };
+    }
+    private static double compute(double num2, double num1, String operator){
+        return switch(operator){
+            case "+" -> num1+num2;
+            case "-" -> num1-num2;
+            case "*" -> num1*num2;
+            case "/" -> num1/num2;
+            default -> 0;
+        };
     }
 }

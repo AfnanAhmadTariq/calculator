@@ -12,11 +12,11 @@ public class Calculator{
         operators = "+-/*()";
     }
 
-    public static void main(String[]  args){
-        String str = "01234";
-        System.out.println(str.substring(0, 2));
-        System.out.println(calSimple("1+2"));
-    }
+    // public static void main(String[]  args){
+    //     String str = "01234";
+    //     System.out.println(str.substring(0, 2));
+    //     System.out.println(calSimple("1+2"));
+    // }
     public static double calSimple(String expression){
         ArrayList<String> postFix = postFix(expression);
         Stack<Double> operand = new Stack<>();
@@ -35,7 +35,11 @@ public class Calculator{
         for(int i = 0; i<expression.length(); i++){
             String current = expression.substring(i, i+1);
             String top = operator.isEmpty() ? "" : operator.peek();
-            if(operators.contains(current)){
+            if(operators.contains(current) || i+1==expression.length()){
+                if(i+1==expression.length()){
+                    postFix.add(expression.substring(index));
+                    break;
+                }
                 postFix.add(expression.substring(index, i));
                 index = i+1;
                 if(current.equals("("))

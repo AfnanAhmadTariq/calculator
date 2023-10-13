@@ -40,3 +40,10 @@
     left: 50%;
     transform: translate(-50%, -650%);
 }
+#logo{
+    position: absolute;
+    width: 5vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-610%, -560%);
+}

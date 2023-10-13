@@ -1,8 +1,10 @@
 package Java;
 
 import java.util.Stack;
+import java.util.ArrayList;
 
 public class Calculator{
+    
 
     private static String operators;
 
@@ -10,47 +12,49 @@ public class Calculator{
         operators = "+-/*()";
     }
 
-    public double calSimple(String expression){
-        String postFix = postFix(expression);
+    public static void main(String[]  args){
+        String str = "01234";
+        System.out.println(str.substring(0, 2));
+        System.out.println(calSimple("1+2"));
+    }
+    public static double calSimple(String expression){
+        ArrayList<String> postFix = postFix(expression);
         Stack<Double> operand = new Stack<>();
-        int index = 0;
-        for(int i = 0; i<postFix.length(); i++){
-            String current = postFix.substring(i, i+1);
-            if(operators.contains(current)){
-                operand.push(Double.parseDouble(postFix.substring(index,i)));
-                index = i+1;
-                operand.push(compute(operand.pop(),operand.pop(),current));
-            }
+        for(String symbol: postFix){
+            if(operators.contains(symbol))
+                operand.push(compute(operand.pop(),operand.pop(),symbol));
+            else
+                operand.push(Double.parseDouble(symbol));
         }
         return operand.pop();
     }
-    private static String postFix(String expression){
-        String postFix = "";
+    private static ArrayList<String> postFix(String expression){
+        ArrayList<String> postFix = new ArrayList<>();
         Stack<String> operator = new Stack<>();
         int index = 0;
         for(int i = 0; i<expression.length(); i++){
             String current = expression.substring(i, i+1);
             String top = operator.isEmpty() ? "" : operator.peek();
             if(operators.contains(current)){
-                postFix = postFix.concat(expression.substring(index, i));
+                postFix.add(expression.substring(index, i));
                 index = i+1;
                 if(current.equals("("))
                     operator.push(current);
                 else if(current.equals(")")){
                     while(!(top.equals("("))){
-                        postFix = postFix.concat(operator.pop());
+                        postFix.add(operator.pop());
                     }
                     operator.pop();
                 }
                 else{
                     while(!(operator.isEmpty()) && precendence(top)>=precendence(current) && !(top.equals("(")))
-                        postFix = postFix.concat(operator.pop());
+                        postFix.add(operator.pop());
                     operator.push(current);
                 }
             }
         }
         while(!(operator.isEmpty()))
-            postFix.concat(operator.pop());
+            postFix.add(operator.pop());
         return postFix;
     }
     private static int precendence(String operator){

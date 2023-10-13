@@ -1,0 +1,15 @@
+:root{
+    --background: white;
+    --foreground: grey;
+    --font-color: black;
+}
+*{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: var(--backgorund);
+}
+#userInput{
+    color: var(--font-color);
+}
+#dislayArea{
+    color: var(--font-color);
+}

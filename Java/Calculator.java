@@ -3,10 +3,6 @@ package Java;
 import java.util.Stack;
 
 public class Calculator{
-    // public static void main(String[]  args){
-    //     String str = "01234";
-    //     System.out.println(str.substring(0, 2));
-    // }
 
     private static String operators;
 
@@ -34,21 +30,21 @@ public class Calculator{
         int index = 0;
         for(int i = 0; i<expression.length(); i++){
             String current = expression.substring(i, i+1);
-            String top = operator.peek();
+            String top = operator.isEmpty() ? "" : operator.peek();
             if(operators.contains(current)){
-                postFix.concat(expression.substring(index, i));
+                postFix = postFix.concat(expression.substring(index, i));
                 index = i+1;
                 if(current.equals("("))
                     operator.push(current);
                 else if(current.equals(")")){
                     while(!(top.equals("("))){
-                        postFix.concat(operator.pop());
+                        postFix = postFix.concat(operator.pop());
                     }
                     operator.pop();
                 }
                 else{
                     while(!(operator.isEmpty()) && precendence(top)>=precendence(current) && !(top.equals("(")))
-                        postFix.concat(operator.pop());
+                        postFix = postFix.concat(operator.pop());
                     operator.push(current);
                 }
             }
